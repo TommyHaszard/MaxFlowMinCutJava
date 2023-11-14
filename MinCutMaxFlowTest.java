@@ -1,20 +1,24 @@
 
-public class EdmondsKarpTest {
+public class MinCutMaxFlowTest {
 
   public static void main(String[] args) {
     // FordFulkerson ff = new FordFulkerson();
     EdmondsKarp ed = new EdmondsKarp();
 
-    // Graph searched = ff.searchAlgo(singleNodeGraph());
-    // ff.printMinCuts(searched);
-
-    Graph searched = ed.searchAlgo(bigTest());
+    Graph searched = ed.searchAlgo(singleNodeGraph());
     ed.printMinCuts(searched);
-    // disconnectedSink();
-    // highFlow();
-    // cycleOnSourceED();
-    // cycleOnSourceFF();
-    // bigTest();
+
+    searched = ed.searchAlgo(disconnectedSink());
+    ed.printMinCuts(searched);
+
+    searched = ed.searchAlgo(highFlow());
+    ed.printMinCuts(searched);
+
+    searched = ed.searchAlgo(cycleOnSource());
+    ed.printMinCuts(searched);
+
+    searched = ed.searchAlgo(bigTest());
+    ed.printMinCuts(searched);
   }
 
   public static Graph singleNodeGraph() {
@@ -31,7 +35,7 @@ public class EdmondsKarpTest {
     graph.setSink(sink);
     graph.setSource(source);
 
-    Node node1 = new Node("Node1");
+    Node node1 = new Node("1");
     graph.createVertex(node1);
 
     graph.addEdge(source, node1, 5);
@@ -54,7 +58,7 @@ public class EdmondsKarpTest {
     graph.setSink(sink);
     graph.setSource(source);
 
-    Node node1 = new Node("Node1");
+    Node node1 = new Node("1");
     graph.createVertex(node1);
 
     graph.addEdge(source, node1, 5);
@@ -75,16 +79,16 @@ public class EdmondsKarpTest {
     graph.setSink(sink);
     graph.setSource(source);
 
-    Node node1 = new Node("Node1");
+    Node node1 = new Node("1");
     graph.createVertex(node1);
 
-    Node node2 = new Node("Node2");
+    Node node2 = new Node("2");
     graph.createVertex(node2);
 
-    Node node3 = new Node("Node3");
+    Node node3 = new Node("3");
     graph.createVertex(node3);
 
-    Node node4 = new Node("Node4");
+    Node node4 = new Node("4");
     graph.createVertex(node4);
 
     graph.addEdge(source, node1, 5);
@@ -112,13 +116,13 @@ public class EdmondsKarpTest {
     graph.setSink(sink);
     graph.setSource(source);
 
-    Node node1 = new Node("Node1");
+    Node node1 = new Node("1");
     graph.createVertex(node1);
 
-    Node node2 = new Node("Node2");
+    Node node2 = new Node("2");
     graph.createVertex(node2);
 
-    Node node3 = new Node("Node3");
+    Node node3 = new Node("3");
     graph.createVertex(node3);
 
     graph.addEdge(source, node1, 9);
@@ -149,25 +153,25 @@ public class EdmondsKarpTest {
     graph.setSink(sink);
     graph.setSource(source);
 
-    Node node1 = new Node("Node1");
+    Node node1 = new Node("1");
     graph.createVertex(node1);
 
-    Node node2 = new Node("Node2");
+    Node node2 = new Node("2");
     graph.createVertex(node2);
 
-    Node node3 = new Node("Node3");
+    Node node3 = new Node("3");
     graph.createVertex(node3);
 
-    Node node4 = new Node("Node4");
+    Node node4 = new Node("4");
     graph.createVertex(node4);
 
-    Node node5 = new Node("Node5");
+    Node node5 = new Node("5");
     graph.createVertex(node5);
 
-    Node node6 = new Node("Node6");
+    Node node6 = new Node("6");
     graph.createVertex(node6);
 
-    Node node7 = new Node("Node7");
+    Node node7 = new Node("7");
     graph.createVertex(node7);
 
     graph.addEdge(source, node1, 3);
@@ -194,4 +198,5 @@ public class EdmondsKarpTest {
 
     return graph;
   }
+
 }
