@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -88,7 +89,7 @@ public class EdmondsKarp implements SearchStrategy {
       }
       max_flow += minFlow;
       // print out the current max flow for this path
-      System.out.println("Max_Flow currently: " + max_flow);
+      System.out.println("Max_Flow currently: " + max_flow + "\n");
     }
     graph.setMaxFlow(max_flow);
     return graph;
@@ -96,37 +97,54 @@ public class EdmondsKarp implements SearchStrategy {
 
   @Override
   public void printMinCuts(Graph graph) {
-    ArrayList<Edge> visited = new ArrayList<>();
-    ArrayList<Node> nodeVisited = new ArrayList<>();
-    Node sink = graph.getSink();
-    // implement bfs again to search throug the graph to find which nodes are
+    HashSet<Node> sourceNodes = new HashSet<Node>();
+    Node source = graph.getSource();
+    // implement bfs again to search throug the graph to find which nodes are not
     // visited
     Queue<Node> queue = new LinkedList<Node>();
 
-    queue.add(sink);
+    queue.add(source);
+    sourceNodes.add(source);
     while (!queue.isEmpty()) {
       Node current = queue.poll();
       ArrayList<Edge> currEdges = current.getEdges();
       for (Edge currEdge : currEdges) {
-        Node u = currEdge.returnNodeU();
-        if (currEdge.getRemainingCapacity() > 0 && !visited.contains(currEdge)) {
-          nodeVisited.add(current);
-          visited.add(currEdge);
-          queue.add(u);
+        Node v = currEdge.returnNodeV();
+        if (currEdge.getRemainingCapacity() > 0 && !sourceNodes.contains(v)) {
+          sourceNodes.add(v);
+          queue.add(v);
         }
       }
     }
-    System.out.println("\nMinCut Results:");
-    System.out.println("-----------------------------------------");
-    int maxFlow = 0;
-    for (Edge edge : visited) {
-      maxFlow += Math.abs(edge.getFlow());
-      System.out.println(edge.returnNodeU().getName() + " - " +
-          edge.returnNodeV().getName() + " with capacity " + Math.abs(edge.getFlow()));
 
+    System.out.println("\nEdmonds Karp MinCut Results:");
+
+    // now we have all the nodes in the source cutset, lets make a sink cutset with
+    // the remaining nodes
+    HashSet<Node> sinkNodes = new HashSet<Node>();
+    for (Node node : graph.returnVertices()) {
+      if (!sourceNodes.contains(node)) {
+        sinkNodes.add(node);
+      }
     }
-    System.out.println("Sum of Cut Edge Capacities = " + maxFlow);
-    System.out.println("Max Flow of the Graph = " + graph.returnMaxFlow());
+
+    // go through each edge and check if sourceNodes contains the U node in that
+    // edge and the sinkNodes contains the V node in that edge. This will be the cut
+    // edge.
+    int maxFlow = 0;
+    for (Edge edge : graph.returnEdges()) {
+      if (sourceNodes.contains(edge.returnNodeU()) &&
+          sinkNodes.contains(edge.returnNodeV())) {
+        System.out.println(edge.returnNodeU().getName() + " - " +
+            edge.returnNodeV().getName() + " with capacity: "
+            + edge.getMaxCapacity());
+
+        maxFlow += edge.getMaxCapacity();
+      }
+    }
+
+    System.out.println("\nSum of Cut Edge Capacities = " + maxFlow);
+    System.out.println("Max Flow of the Graph = " + graph.returnMaxFlow() + "\n");
   }
 
 }

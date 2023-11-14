@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -8,6 +9,7 @@ public class Graph {
   private Node source;
   private Node sink;
   private int maxFlow;
+  private HashSet<Edge> edgeSet = new HashSet<Edge>();
 
   // hashmap for nodes for instant lookup of the node
   private HashMap<String, Node> vertices = new HashMap<String, Node>();
@@ -38,6 +40,8 @@ public class Graph {
       residual.setResidual(newEdge);
       u.addEdge(newEdge);
       v.addEdge(residual);
+      edgeSet.add(newEdge);
+      edgeSet.add(residual);
     }
   }
 
@@ -63,6 +67,10 @@ public class Graph {
 
   public int returnMaxFlow() {
     return this.maxFlow;
+  }
+
+  public HashSet<Edge> returnEdges() {
+    return edgeSet;
   }
 
   public ArrayList<Node> returnVertices() {
