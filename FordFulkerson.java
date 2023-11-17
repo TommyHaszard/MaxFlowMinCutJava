@@ -1,90 +1,145 @@
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Stack;
 
 public class FordFulkerson implements SearchStrategy {
-
   @Override
   public Graph searchAlgo(Graph graph) {
-    findAllPaths(graph, graph.getSource(), graph.getSink());
-    return graph;
-  }
-
-  public static ArrayList<LinkedList<Edge>> findAllPaths(Graph graph, Node start, Node end) {
-    ArrayList<LinkedList<Edge>> allPaths = new ArrayList<>();
+    System.out.println("\nFord-Fulkerson:");
+    System.out.println("----------------------------------------------------\n");
     LinkedList<Edge> currentPath = new LinkedList<>();
     HashSet<Node> visited = new HashSet<>();
-    dfs(graph, start, end, currentPath, allPaths, visited);
-    return allPaths;
+    Node source = graph.getSource();
+    Node sink = graph.getSink();
+    int maxFlow = 0;
+    while (dfs(graph, source, sink, currentPath, visited)) {
+      int flow = Integer.MAX_VALUE;
+      Iterator<Edge> iterator = currentPath.descendingIterator();
+      while (iterator.hasNext()) {
+        Edge currEdge = iterator.next();
+        flow = Math.min(flow, currEdge.getRemainingCapacity());
+      }
+      iterator = currentPath.descendingIterator();
+      while (iterator.hasNext()) {
+        Edge currEdge = iterator.next();
+        currEdge.setCurrentFlow(flow);
+        currEdge.printEdgeInformation();
+
+      }
+      currentPath.clear();
+      visited.clear();
+      maxFlow += flow;
+
+      System.out.println("\nMax Flow currently: " + maxFlow);
+    }
+    graph.setMaxFlow(maxFlow);
+    return graph;
+
   }
 
-  private static void dfs(
-          Graph graph,
-          Node current,
-          Node end,
-          LinkedList<Edge> currentPath,
-          ArrayList<LinkedList<Edge>> allPaths,
-          HashSet<Node> visited
-  ) {
+  private static boolean dfs(
+      Graph graph,
+      Node current,
+      Node sink,
+      LinkedList<Edge> currentPath,
+      // ArrayList<LinkedList<Edge>> allPaths,
+      HashSet<Node> visited) {
+    if (current.equals(sink)) {
+      return true;
+    }
     visited.add(current);
-
-    if (current == end) {
-      allPaths.add(new LinkedList<>(currentPath));
-    } else {
-      for (Edge edge : current.getEdges()) {
-        Node neighbor = edge.returnNodeV();
-        if (!visited.contains(neighbor)) {
-          currentPath.addLast(edge);
-          dfs(graph, neighbor, end, currentPath, allPaths, visited);
-
+    for (Edge edge : current.getEdges()) {
+      Node neighbor = edge.returnNodeV();
+      if (!visited.contains(neighbor) && edge.getRemainingCapacity() > 0) {
+        currentPath.addLast(edge);
+        if (dfs(graph, neighbor, sink, currentPath, visited)) {
+          return true;
         }
       }
     }
-    visited.remove(current);
-    if(!currentPath.isEmpty()) {
+
+    if (!currentPath.isEmpty()) {
       currentPath.removeLast();
     }
+    return false;
   }
 
   @Override
   public void printMinCuts(Graph graph) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'printMinCuts'");
+    HashSet<Node> sourceNodes = new HashSet<Node>();
+    Node source = graph.getSource();
+    // implement bfs again to search throug the graph to find which nodes are not
+    // visited
+    Stack<Node> stack = new Stack<Node>();
+
+    stack.add(source);
+    sourceNodes.add(source);
+    while (!stack.isEmpty()) {
+      Node current = stack.pop();
+      ArrayList<Edge> currEdges = current.getEdges();
+      for (Edge currEdge : currEdges) {
+        Node v = currEdge.returnNodeV();
+        if (currEdge.getRemainingCapacity() > 0 && !sourceNodes.contains(v)) {
+          sourceNodes.add(v);
+          stack.push(v);
+        }
+      }
+    }
+
+    System.out.println("MinCut Results:\n");
+
+    // now we have all the nodes in the source cutset, lets make a sink cutset with
+    // the remaining nodes
+    HashSet<Node> sinkNodes = new HashSet<Node>();
+    for (Node node : graph.returnVertices()) {
+      if (!sourceNodes.contains(node)) {
+        sinkNodes.add(node);
+      }
+    }
+
+    // go through each edge and check if sourceNodes contains the U node in that
+    // edge and the sinkNodes contains the V node in that edge. This will be the cut
+    // edge.
+    int maxFlow = 0;
+    for (Edge edge : graph.returnEdges()) {
+      if (sourceNodes.contains(edge.returnNodeU()) &&
+          sinkNodes.contains(edge.returnNodeV())) {
+        System.out.println(edge.returnNodeU().getName() + " - " +
+            edge.returnNodeV().getName() + " with capacity: "
+            + edge.getMaxCapacity());
+
+        maxFlow += edge.getMaxCapacity();
+      }
+    }
+
+    System.out.println("\nSum of Cut Edge Capacities = " + maxFlow);
+    System.out.println("Max Flow of the Graph = " + graph.returnMaxFlow() + "\n");
   }
 
-}
+  public boolean dfs(Graph graph, Node startNode) {
+    Node sink = graph.getSink();
+    Stack<Node> stack = new Stack<Node>();
+    HashMap<String, Edge> foundEdges = new HashMap<>();
 
-//  ArrayList<LinkedList<Edge>> paths = new ArrayList<>();
-//  int maxFlow = 0;
-//  Node source = graph.getSource();
-//  Node sink = graph.getSink();
-//
-//  Stack<Node> stack = new Stack<>();
-//  Map<String, Boolean> visited = new HashMap<>();
-//  Map<String, Node> edgeTo = new HashMap<>();
-//
-//    stack.push(source);
-//            String pathStr = "source - ";
-//            LinkedList<Edge> path = new LinkedList<>();
-//        while(!stack.empty()) {
-//        Node currentNode = stack.pop();
-//
-//        visited.put(currentNode.getName(), true);
-//        for(Edge edge : currentNode.getEdges()) {
-//        Node neighbour = edge.returnNodeV();
-//
-//        if (neighbour.name.equals(sink.name)) {
-//        System.out.println(pathStr.concat("sink"));
-////          path = "source - ";
-//        break;
-//        }
-//        if(!visited.containsKey(neighbour.getName()) && edge.getRemainingCapacity() > 0) {
-//        pathStr = pathStr + neighbour.getName() + " - ";
-//        stack.push(neighbour);
-//        edgeTo.put(neighbour.getName(), currentNode);
-//        }
-//
-//        }
-//        }
-//
-//
-//        graph.setMaxFlow(maxFlow);
+    stack.add(startNode);
+    while (!stack.isEmpty()) {
+      Node currNode = stack.pop();
+
+      for (Edge currEdge : currNode.getEdges()) {
+        Node v = currEdge.returnNodeV();
+        int unusedCap = currEdge.getRemainingCapacity();
+        if (unusedCap > 0 && !foundEdges.containsKey(v.getName())) {
+          foundEdges.put(v.getName(), currEdge);
+          if (v.getName().equals(sink.getName())) {
+            break;
+          }
+          stack.add(v);
+        }
+      }
+    }
+    return true;
+  }
+}
