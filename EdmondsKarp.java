@@ -8,11 +8,12 @@ public class EdmondsKarp implements SearchStrategy {
 
   @Override
   public Graph searchAlgo(Graph graph) {
+    System.out.println("\nEdmonds-Karp:");
+    System.out.println("----------------------------------------------------\n");
     int max_flow = 0;
     // set the source and sink
     Node sink = graph.getSink();
     Node source = graph.getSource();
-
     while (true) {
       // create the queue as a linkedList of nodes
       Queue<Node> queue = new LinkedList<Node>();
@@ -89,7 +90,7 @@ public class EdmondsKarp implements SearchStrategy {
       }
       max_flow += minFlow;
       // print out the current max flow for this path
-      System.out.println("Max_Flow currently: " + max_flow + "\n");
+      System.out.println("\nMax Flow currently: " + max_flow);
     }
     graph.setMaxFlow(max_flow);
     return graph;
@@ -117,7 +118,7 @@ public class EdmondsKarp implements SearchStrategy {
       }
     }
 
-    System.out.println("\nEdmonds Karp MinCut Results:");
+    System.out.println("\nMinCut Results:\n");
 
     // now we have all the nodes in the source cutset, lets make a sink cutset with
     // the remaining nodes

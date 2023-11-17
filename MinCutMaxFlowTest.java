@@ -1,29 +1,54 @@
+import java.time.format.SignStyle;
 
 public class MinCutMaxFlowTest {
 
   public static void main(String[] args) {
     // FordFulkerson ff = new FordFulkerson();
     EdmondsKarp ed = new EdmondsKarp();
+    FordFulkerson ff = new FordFulkerson();
 
-    Graph searched = ed.searchAlgo(singleNodeGraph());
-    ed.printMinCuts(searched);
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("Test with one node!");
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    Graph edGraph = ed.searchAlgo(singleNodeGraph());
+    ed.printMinCuts(edGraph);
+    Graph fordGraph = ff.searchAlgo(singleNodeGraph());
+    ff.printMinCuts(fordGraph);
 
-    searched = ed.searchAlgo(disconnectedSink());
-    ed.printMinCuts(searched);
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("Test with disconnected sink!");
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    edGraph = ed.searchAlgo(disconnectedSink());
+    ed.printMinCuts(edGraph);
+    fordGraph = ff.searchAlgo(disconnectedSink());
+    ff.printMinCuts(fordGraph);
 
-    searched = ed.searchAlgo(highFlow());
-    ed.printMinCuts(searched);
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("Test with high flow!!");
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    edGraph = ed.searchAlgo(highFlow());
+    ed.printMinCuts(edGraph);
+    fordGraph = ff.searchAlgo(highFlow());
+    ff.printMinCuts(fordGraph);
 
-    searched = ed.searchAlgo(cycleOnSource());
-    ed.printMinCuts(searched);
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("Test with cycle on source!");
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    edGraph = ed.searchAlgo(cycleOnSource());
+    ed.printMinCuts(edGraph);
+    fordGraph = ff.searchAlgo(cycleOnSource());
+    ff.printMinCuts(fordGraph);
 
-    searched = ed.searchAlgo(bigTest());
-    ed.printMinCuts(searched);
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("Test with cycle, multiple paths and residual path!");
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    edGraph = ed.searchAlgo(bigTest());
+    ed.printMinCuts(edGraph);
+    fordGraph = ff.searchAlgo(bigTest());
+    ff.printMinCuts(fordGraph);
   }
 
   public static Graph singleNodeGraph() {
-    System.out.println("Test with one node!");
-    System.out.println("------------------------------------------------------------------");
     Graph graph = new Graph();
 
     Node sink = new Node("Sink");
@@ -45,8 +70,6 @@ public class MinCutMaxFlowTest {
   }
 
   public static Graph disconnectedSink() {
-    System.out.println("Test with disconnected sink!");
-    System.out.println("------------------------------------------------------------------");
     Graph graph = new Graph();
 
     Node sink = new Node("Sink");
@@ -66,8 +89,6 @@ public class MinCutMaxFlowTest {
   }
 
   public static Graph highFlow() {
-    System.out.println("Test with high flow!");
-    System.out.println("------------------------------------------------------------------");
     Graph graph = new Graph();
 
     Node sink = new Node("Sink");
@@ -103,8 +124,6 @@ public class MinCutMaxFlowTest {
   }
 
   public static Graph cycleOnSource() {
-    System.out.println("Test with cycle on source");
-    System.out.println("------------------------------------------------------------------");
     Graph graph = new Graph();
 
     Node sink = new Node("Sink");
@@ -140,8 +159,6 @@ public class MinCutMaxFlowTest {
   }
 
   public static Graph bigTest() {
-    System.out.println("Test with cycle, multiple paths and residual path!");
-    System.out.println("------------------------------------------------------------------");
     Graph graph = new Graph();
 
     Node sink = new Node("Sink");

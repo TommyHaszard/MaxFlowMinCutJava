@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -71,10 +70,10 @@ public class FordFulkerson implements SearchStrategy {
   public void printMinCuts(Graph graph) {
     HashSet<Node> sourceNodes = new HashSet<Node>();
     Node source = graph.getSource();
-    // implement bfs again to search throug the graph to find which nodes are not
-    // visited
     Stack<Node> stack = new Stack<Node>();
 
+    // we wont be able to reach Sink from Source so we can't reuse the recursive
+    // method, iterative approach with Stack applied to find all sourceNodes
     stack.add(source);
     sourceNodes.add(source);
     while (!stack.isEmpty()) {
@@ -117,29 +116,5 @@ public class FordFulkerson implements SearchStrategy {
 
     System.out.println("\nSum of Cut Edge Capacities = " + maxFlow);
     System.out.println("Max Flow of the Graph = " + graph.returnMaxFlow() + "\n");
-  }
-
-  public boolean dfs(Graph graph, Node startNode) {
-    Node sink = graph.getSink();
-    Stack<Node> stack = new Stack<Node>();
-    HashMap<String, Edge> foundEdges = new HashMap<>();
-
-    stack.add(startNode);
-    while (!stack.isEmpty()) {
-      Node currNode = stack.pop();
-
-      for (Edge currEdge : currNode.getEdges()) {
-        Node v = currEdge.returnNodeV();
-        int unusedCap = currEdge.getRemainingCapacity();
-        if (unusedCap > 0 && !foundEdges.containsKey(v.getName())) {
-          foundEdges.put(v.getName(), currEdge);
-          if (v.getName().equals(sink.getName())) {
-            break;
-          }
-          stack.add(v);
-        }
-      }
-    }
-    return true;
   }
 }

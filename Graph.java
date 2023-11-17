@@ -8,7 +8,8 @@ public class Graph {
   // source and sink node
   private Node source;
   private Node sink;
-  private int maxFlow;
+  private int maxFlow = 0;
+  private int count = 0;
   private HashSet<Edge> edgeSet = new HashSet<Edge>();
 
   // hashmap for nodes for instant lookup of the node
@@ -77,5 +78,13 @@ public class Graph {
     Collection<Node> collection = this.vertices.values();
     ArrayList<Node> list = new ArrayList<>(collection);
     return list;
+  }
+
+  public void incrementCount() {
+    this.count++;
+  }
+
+  public int returnCount() {
+    return this.count;
   }
 }
